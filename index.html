@@ -1,1 +1,294 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Найриятқа шақыру</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #faf6f0;
+            --card-bg: #ffffff;
+            --text-color: #2b2b2b;
+            --accent-color: #c9a0dc; /* Нәзік лаванда/француз стилі */
+            --accent-hover: #b38bc4;
+            --gray-text: #707070;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid rgba(201, 160, 220, 0.2);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--gray-text);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-hover);
+        }
+
+        /* Таймер стилі */
+        .timer-container {
+            display: flex;
+            justify-content: space-between;
+            background: #fff8f0;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 1px dashed var(--accent-color);
+        }
+
+        .timer-block {
+            flex: 1;
+        }
+
+        .timer-number {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .timer-label {
+            font-size: 10px;
+            color: var(--gray-text);
+            text-transform: uppercase;
+        }
+
+        /* Сипаттама стилі */
+        .desc-text {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        /* Карта стилі */
+        .map-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+        }
+
+        /* Регламент стилі */
+        .regulations {
+            text-align: left;
+            background: #fcfbfa;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+
+        .reg-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .reg-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .reg-icon {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        /* Батырмалар стилі */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            position: relative;
+            height: 50px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-yes {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 5px 15px rgba(201, 160, 220, 0.4);
+            flex: 1;
+        }
+
+        .btn-yes:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-no {
+            background-color: #eee;
+            color: var(--gray-text);
+            position: absolute;
+            right: 15px;
+            width: 140px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Найрият, бұл саған арналған шақыру...</h1>
+    <p class="subtitle">Күнделікті кофейнялардан ерекше жоспар дайын ✨</p>
+
+    <div class="section-title">Кездесуге дейін:</div>
+    <div class="timer-container">
+        <div class="timer-block">
+            <div class="timer-number" id="days">00</div>
+            <div class="timer-label">Күн</div>
+        </div>
+        <div class="timer-block">
+            <div class="timer-number" id="hours">00</div>
+            <div class="timer-label">Сағат</div>
+        </div>
+        <div class="timer-block">
+            <div class="timer-number" id="minutes">00</div>
+            <div class="timer-label">Минут</div>
+        </div>
+        <div class="timer-block">
+            <div class="timer-number" id="seconds">00</div>
+            <div class="timer-label">Секунд</div>
+        </div>
+    </div>
+
+    <div class="section-title">Қайда барамыз?</div>
+    <p class="desc-text">
+        Астананың ең стильді орындарының бірі — <strong>Lou Lou</strong> рестораны. Ауыр кешкі ас емес, француздық стильдегі ең дәмді десерттер мен жылы шай күтеді ☕️🍰
+    </p>
+
+    <div class="map-wrapper">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2504.423984168097!2d71.43285747690622!3d51.11909873967584!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4245856eb1bcbb83%3A0x6b63ca5b565578a1!2sLou%20Lou!5e0!3m2!1skk!2skz!4v1717780000000!5m2!1skk!2skz" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <div class="section-title">Кездесу регламенті:</div>
+    <div class="regulations">
+        <div class="reg-item"><span class="reg-icon">⏳</span> <span><strong>Ұзақтығы:</strong> 1,5 - 2 сағат (жалығып үлгермейсің)</span></div>
+        <div class="reg-item"><span class="reg-icon">💬</span> <span><strong>Әңгіме:</strong> Саясатсыз, тек қызықты әрі жеңіл тақырыптар</span></div>
+        <div class="reg-item"><span class="reg-icon">🚕</span> <span><strong>Қауіпсіздік:</strong> Үйіңе дейін жайлы таксимен қайту кепілдігі</span></div>
+    </div>
+
+    <div class="section-title">Сенің шешімің?</div>
+    <div class="btn-group">
+        <button class="btn btn-yes" onclick="acceptInvitation()">Иә, десерт жеуге дайынмын! 🍰</button>
+        <button class="btn btn-no" id="noBtn" onmouseover="moveButton()">Ойлану керек...</button>
+    </div>
+</div>
+
+<script>
+    // 1. ТАЙМЕР СКРИПТІ (Жексенбі, 7 маусым 2026 жыл, 17:00-ге бапталған)
+    const targetDate = new Date('June 7, 2026 17:00:00').getTime();
+
+    const countdown = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+        document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+        document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+
+        if (distance < 0) {
+            clearInterval(countdown);
+            document.getElementById('days').innerText = '00';
+            document.getElementById('hours').innerText = '00';
+            document.getElementById('minutes').innerText = '00';
+            document.getElementById('seconds').innerText = '00';
+        }
+    }, 1000);
+
+    // 2. ҚАШАТЫН БАТЫРМА СКРИПТІ
+    function moveButton() {
+        const btn = document.getElementById('noBtn');
+        const x = Math.random() * 120 - 60; // солға не оңға ығысу
+        const y = Math.random() * 80 - 40;  // жоғары не төмен ығысу
+        
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // 3. СӘТТІ ЖАУАП ПЕН КОНФЕТТИ СКРИПТІ (Сенің нөмірің енгізілді)
+    function acceptInvitation() {
+        // Отшашу ату
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        // 1.5 секундтан кейін Ватсапқа автоматты хат жіберіледі
+        setTimeout(function() {
+            window.location.href = "https://wa.me/77472465381?text=Сәлем!+Шақыруыңды+қабылдадым,+десерт+жеуге+дайынмын!+🍰";
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
 
